@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import Link from "next/link"
 import { ArrowUpRight, Star, X } from "lucide-react"
 
@@ -11,7 +11,8 @@ import { spark, toTrend } from "@/lib/market-utils"
 import { marketPagePath } from "@/lib/symbol-detail"
 import { useSymbolDetail } from "@/lib/symbol-detail-context"
 import { useWatchlist } from "@/lib/use-watchlist"
-import { ChangePill, Sparkline, fmt } from "./shared"
+import { ChangePill, fmt } from "./shared"
+import { LightweightChart, pointsFromValues } from "./lightweight-chart"
 import { SymbolLogo } from "./symbol-logo"
 import { cn } from "@/lib/utils"
 
@@ -32,11 +33,24 @@ export function SymbolDetailModal() {
     }
   }, [openSymbol, record])
 
+  const up = record ? record.mockChangePercent >= 0 : false
+  const trend = record ? toTrend(record.mockChangePercent) : "up"
+  const sparkData = record
+    ? spark(record.symbol.length * 7, 14, trend === "up" ? 1 : -1)
+    : []
+  const chartSeries = useMemo(
+    () => [
+      {
+        data: pointsFromValues(sparkData),
+        color: up ? "var(--gain)" : "var(--loss)",
+        lineWidth: 2,
+      },
+    ],
+    [sparkData, up],
+  )
+
   if (!record) return null
 
-  const up = record.mockChangePercent >= 0
-  const trend = toTrend(record.mockChangePercent)
-  const sparkData = spark(record.symbol.length * 7, 14, trend === "up" ? 1 : -1)
   const inWatchlist =
     record.watchlistSymbol != null && symbols.includes(record.watchlistSymbol)
   const canWatchlist = record.watchlistSymbol != null
@@ -99,7 +113,13 @@ export function SymbolDetailModal() {
             </p>
             <ChangePill value={record.mockChangePercent} className="mt-1" />
           </div>
-          <Sparkline data={sparkData} positive={up} className="h-10 w-24" width={96} height={40} />
+          <LightweightChart
+            series={chartSeries}
+            height={40}
+            variant="area"
+            showGrid={false}
+            className="h-10 w-24 shrink-0"
+          />
         </div>
         {record.region && (
           <p className="mt-2 text-xs text-muted-foreground">
@@ -145,13 +165,13 @@ export function SymbolDetailModal() {
           </TabsContent>
 
           <TabsContent value="chart" className="mt-0">
-            <div className="flex h-40 items-center justify-center rounded-md border border-border bg-chart-bg">
-              <Sparkline
-                data={sparkData}
-                positive={up}
-                className="h-28 w-full max-w-sm px-4"
-                width={320}
-                height={112}
+            <div className="overflow-hidden rounded-md border border-border bg-chart-bg">
+              <LightweightChart
+                series={chartSeries}
+                height={160}
+                variant="area"
+                showGrid
+                className="h-40 w-full"
               />
             </div>
             <p className="mt-2 text-[11px] text-muted-foreground">{t("misc.delayed")}</p>

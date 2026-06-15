@@ -1,0 +1,68 @@
+"use client"
+
+import useSWR from "swr"
+
+import { features } from "@/lib/config/features"
+import type { CryptoAsset, GlobalQuote, VietnamMarketIndex } from "@/lib/market-types"
+
+import { jsonFetcher } from "./fetcher"
+import { SWR_KEYS } from "./keys"
+
+const swrOptions = {
+  revalidateOnFocus: false,
+  dedupingInterval: 30_000,
+  errorRetryCount: 2,
+} as const
+
+export type VietnamMarketsResponse = {
+  source?: "live" | "mock"
+  indices?: VietnamMarketIndex[]
+  heatmapMarket?: import("@/lib/market-types").HeatmapMarket
+}
+
+export type GlobalMarketsResponse = {
+  source?: "live" | "mock"
+  quotes?: GlobalQuote[]
+}
+
+export type CryptoResponse = {
+  source?: "live" | "mock"
+  assets?: CryptoAsset[]
+  heatmapTiles?: import("@/lib/market-types").HeatmapTile[]
+}
+
+function useLiveSwr<T>(key: string | null) {
+  return useSWR<T>(features.liveClientFetch ? key : null, jsonFetcher<T>, swrOptions)
+}
+
+export function useVietnamMarkets() {
+  return useLiveSwr<VietnamMarketsResponse>(SWR_KEYS.vietnamMarkets)
+}
+
+export function useGlobalMarkets() {
+  return useLiveSwr<GlobalMarketsResponse>(SWR_KEYS.globalMarkets)
+}
+
+export function useCryptoMarkets() {
+  return useLiveSwr<CryptoResponse>(SWR_KEYS.crypto)
+}
+
+export function useNewsApi() {
+  return useLiveSwr<{ source?: "live" | "mock"; uiItems?: import("@/lib/market-types").MarketNewsItem[] }>(
+    SWR_KEYS.news,
+  )
+}
+
+export function useCalendarApi() {
+  return useLiveSwr<{ source?: "live" | "mock"; uiEvents?: import("@/lib/market-types").EconomicEvent[] }>(
+    SWR_KEYS.calendar,
+  )
+}
+
+/** True while initial live fetch is in flight (safe mode returns false). */
+export function useMarketsLoading(
+  ...hooks: Array<{ isLoading: boolean; data: unknown }>
+): boolean {
+  if (!features.liveClientFetch) return false
+  return hooks.some((h) => h.isLoading && h.data === undefined)
+}

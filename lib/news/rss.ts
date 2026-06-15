@@ -1,4 +1,4 @@
-import "server-only"
+import Parser from "rss-parser"
 
 import { fetchWithTimeout } from "@/lib/providers/fetch-utils"
 
@@ -30,39 +30,41 @@ const RSS_FEEDS: { url: string; source: string; category: string }[] = [
 
 const MAX_ITEMS = 20
 
-function decodeXml(text: string): string {
-  return text
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .trim()
+const parser = new Parser({
+  customFields: {
+    item: [["media:content", "mediaContent"]],
+  },
+})
+
+function itemLink(item: Parser.Item): string {
+  if (typeof item.link === "string" && item.link) return item.link
+  if (typeof item.guid === "string" && item.guid) return item.guid
+  return ""
 }
 
-function extractTag(block: string, tag: string): string {
-  const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i")
-  const match = block.match(re)
-  return match ? decodeXml(match[1]) : ""
+function itemPublishedAt(item: Parser.Item): string {
+  if (item.isoDate) return item.isoDate
+  if (item.pubDate) return item.pubDate
+  return new Date().toISOString()
 }
 
-function parseRssXml(xml: string, source: string, category: string): NormalizedNewsItem[] {
+function parseFeed(
+  feed: Parser.Output<{ mediaContent?: string }>,
+  source: string,
+  category: string,
+): NormalizedNewsItem[] {
   const items: NormalizedNewsItem[] = []
-  const itemBlocks = xml.match(/<item[\s\S]*?<\/item>/gi) ?? []
 
-  for (const block of itemBlocks) {
-    const title = extractTag(block, "title")
-    const link = extractTag(block, "link") || extractTag(block, "guid")
-    const pubDate = extractTag(block, "pubDate") || new Date().toISOString()
-
-    if (!title || !link) continue
+  for (const item of feed.items ?? []) {
+    const title = item.title?.trim() ?? ""
+    const url = itemLink(item)
+    if (!title || !url) continue
 
     items.push({
       title,
       source,
-      url: link,
-      publishedAt: pubDate,
+      url,
+      publishedAt: itemPublishedAt(item),
       category,
     })
   }
@@ -96,7 +98,8 @@ export async function fetchNewsFromRss(): Promise<NormalizedNewsItem[]> {
       })
       if (!res.ok) throw new Error(`RSS ${feed.source} failed: ${res.status}`)
       const xml = await res.text()
-      return parseRssXml(xml, feed.source, feed.category)
+      const parsed = await parser.parseString(xml)
+      return parseFeed(parsed, feed.source, feed.category)
     }),
   )
 

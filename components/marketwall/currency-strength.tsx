@@ -1,18 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLang } from "@/lib/i18n"
 import {
   currencyStrengthChartMeta,
   currencyStrengthItems as currencyStrength,
 } from "@/lib/currency-strength-mock"
+import { LightweightChart, pointsFromValues } from "./lightweight-chart"
 import { SectionHeading } from "./shared"
 import { cn } from "@/lib/utils"
-
-const CHART_W = 720
-const CHART_H = 228
-const PAD = { top: 12, right: 8, bottom: 8, left: 40 }
 
 const LINE_COLORS = [
   "var(--gain)",
@@ -45,87 +42,34 @@ type StrengthChartProps = {
 }
 
 function StrengthChart({ visible }: StrengthChartProps) {
-  const plotW = CHART_W - PAD.left - PAD.right
-  const plotH = CHART_H - PAD.top - PAD.bottom
-  const visibleItems = currencyStrength.filter((c) => visible.has(c.code))
-  const allValues = visibleItems.flatMap((c) => c.series)
-  const min = allValues.length ? Math.min(...allValues) : 0
-  const max = allValues.length ? Math.max(...allValues) : 1
-  const range = max - min || 1
+  const series = useMemo(
+    () =>
+      currencyStrength
+        .map((c, ci) => ({ c, ci }))
+        .filter(({ c }) => visible.has(c.code))
+        .map(({ c, ci }) => ({
+          data: pointsFromValues(c.series),
+          color: LINE_COLORS[ci % LINE_COLORS.length],
+          lineWidth: c.code === "VND" ? 2.5 : 2,
+        })),
+    [visible],
+  )
 
   return (
-    <svg
-      viewBox={`0 0 ${CHART_W} ${CHART_H}`}
-      className="h-full w-full"
-      preserveAspectRatio="none"
-      aria-hidden
-    >
-      {[0, 0.25, 0.5, 0.75, 1].map((pct) => {
-        const y = PAD.top + plotH * pct
-        return (
-          <line
-            key={pct}
-            x1={PAD.left}
-            y1={y}
-            x2={CHART_W - PAD.right}
-            y2={y}
-            stroke="var(--border)"
-            strokeOpacity={0.5}
-            strokeWidth="1"
-            vectorEffect="non-scaling-stroke"
-          />
-        )
-      })}
-
-      {currencyStrengthChartMeta.timeLabels.map((label, i) => {
-        const x =
-          PAD.left + (i / (currencyStrengthChartMeta.timeLabels.length - 1)) * plotW
-        return (
-          <line
-            key={label}
-            x1={x}
-            y1={PAD.top}
-            x2={x}
-            y2={PAD.top + plotH}
-            stroke="var(--border)"
-            strokeOpacity={0.25}
-            strokeWidth="1"
-            vectorEffect="non-scaling-stroke"
-          />
-        )
-      })}
-
-      {currencyStrength.map((c, ci) => {
-        if (!visible.has(c.code)) return null
-        const step = plotW / (c.series.length - 1)
-        const points = c.series
-          .map((v, i) => {
-            const x = PAD.left + i * step
-            const y = PAD.top + plotH - ((v - min) / range) * plotH
-            return `${x.toFixed(1)},${y.toFixed(1)}`
-          })
-          .join(" ")
-        return (
-          <polyline
-            key={c.code}
-            points={points}
-            fill="none"
-            stroke={LINE_COLORS[ci % LINE_COLORS.length]}
-            strokeWidth={c.code === "VND" ? 2.5 : 2}
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        )
-      })}
-    </svg>
+    <LightweightChart
+      series={series}
+      height={228}
+      showTimeScale={false}
+      showGrid
+      className="h-full"
+    />
   )
 }
 
 function TimeAxis() {
   const { timezone, timeLabels } = currencyStrengthChartMeta
-  const leftPct = `${(PAD.left / CHART_W) * 100}%`
-  const rightPct = `${(PAD.right / CHART_W) * 100}%`
+  const leftPct = "5.5%"
+  const rightPct = "1.1%"
 
   return (
     <div className="shrink-0 border-t border-border/50 pt-1.5">

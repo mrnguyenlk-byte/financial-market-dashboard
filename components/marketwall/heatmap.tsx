@@ -1,11 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useMemo, useState } from "react"
 import { ArrowUpRight } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { clientDebug, features } from "@/lib/config/features"
 import { useLang } from "@/lib/i18n"
 import { useSymbolDetail } from "@/lib/symbol-detail-context"
+import {
+  useCryptoMarkets,
+  useMarketsLoading,
+  useVietnamMarkets,
+} from "@/lib/swr/use-market-apis"
 import type { HeatmapMarket, HeatmapMarketId, HeatmapTile, VnExchangeId } from "@/lib/market-types"
 import { SectionHeading, fmt, heatStyle } from "./shared"
 import { HeatmapGridSkeleton } from "./data-skeletons"
@@ -13,16 +19,6 @@ import { cn } from "@/lib/utils"
 
 const timeframes = ["1D", "7D", "1M"] as const
 const VN_EXCHANGE_IDS: VnExchangeId[] = ["hose", "hnx", "upcom"]
-
-type CryptoApiResponse = {
-  source?: "live" | "mock"
-  heatmapTiles?: HeatmapTile[]
-}
-
-type VietnamMarketsApiResponse = {
-  source?: "live" | "mock"
-  heatmapMarket?: HeatmapMarket
-}
 
 function cryptoPrice(n: number) {
   if (n >= 1000) return fmt(n)
@@ -142,56 +138,38 @@ export function HeatmapSection({ markets }: { markets: HeatmapMarket[] }) {
   const [activeMarket, setActiveMarket] = useState<HeatmapMarketId>("vn")
   const [activeExchange, setActiveExchange] = useState<VnExchangeId>("hose")
   const [timeframe, setTimeframe] = useState<(typeof timeframes)[number]>("1D")
-  const [cryptoTiles, setCryptoTiles] = useState<HeatmapTile[] | null>(null)
-  const [vnMarket, setVnMarket] = useState<HeatmapMarket | null>(null)
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    let cancelled = false
+  const vietnam = useVietnamMarkets()
+  const crypto = useCryptoMarkets()
+  const loading = useMarketsLoading(vietnam, crypto)
 
-    async function loadHeatmapData() {
-      setLoading(true)
-      try {
-        const [cryptoRes, vietnamRes] = await Promise.all([
-          fetch("/api/crypto", { cache: "no-store" }),
-          fetch("/api/vietnam-markets", { cache: "no-store" }),
-        ])
-
-        if (!cancelled && cryptoRes.ok) {
-          const cryptoData = (await cryptoRes.json()) as CryptoApiResponse
-          if (cryptoData.heatmapTiles?.length) {
-            setCryptoTiles(cryptoData.heatmapTiles)
-          }
-        }
-
-        if (!cancelled && vietnamRes.ok) {
-          const vietnamData = (await vietnamRes.json()) as VietnamMarketsApiResponse
-          if (vietnamData.heatmapMarket?.exchanges?.length) {
-            setVnMarket(filterVnExchanges(vietnamData.heatmapMarket))
-          }
-        }
-      } catch {
-        // keep SSR fallback tiles
-      } finally {
-        if (!cancelled) setLoading(false)
+  const { resolvedMarkets, cryptoTiles } = useMemo(() => {
+    if (!features.liveClientFetch) {
+      clientDebug("HeatmapSection", "using static fallback")
+      return {
+        resolvedMarkets: markets.map((m) => (m.id === "vn" ? filterVnExchanges(m) : m)),
+        cryptoTiles: null as HeatmapTile[] | null,
       }
     }
 
-    loadHeatmapData()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+    const cryptoTiles = crypto.data?.heatmapTiles?.length ? crypto.data.heatmapTiles : null
+    const vnMarket =
+      vietnam.data?.heatmapMarket?.exchanges?.length
+        ? filterVnExchanges(vietnam.data.heatmapMarket)
+        : null
 
-  const resolvedMarkets = markets.map((market) => {
-    if (market.id === "vn") {
-      return vnMarket ?? filterVnExchanges(market)
-    }
-    if (market.id === "crypto" && cryptoTiles) {
-      return { ...market, tiles: cryptoTiles }
-    }
-    return market
-  })
+    const resolvedMarkets = markets.map((market) => {
+      if (market.id === "vn") {
+        return vnMarket ?? filterVnExchanges(market)
+      }
+      if (market.id === "crypto" && cryptoTiles) {
+        return { ...market, tiles: cryptoTiles }
+      }
+      return market
+    })
+
+    return { resolvedMarkets, cryptoTiles }
+  }, [markets, vietnam.data, crypto.data])
 
   const current =
     resolvedMarkets.find((m) => m.id === activeMarket) ?? resolvedMarkets[0]
@@ -233,22 +211,22 @@ export function HeatmapSection({ markets }: { markets: HeatmapMarket[] }) {
             aria-label="Market"
             className="flex flex-wrap items-center gap-1"
           >
-            {resolvedMarkets.map((market) => (
+            {resolvedMarkets.map((m) => (
               <button
-                key={market.id}
+                key={m.id}
                 type="button"
                 role="tab"
-                aria-selected={activeMarket === market.id}
-                onClick={() => setActiveMarket(market.id)}
+                aria-selected={activeMarket === m.id}
+                onClick={() => setActiveMarket(m.id)}
                 className={cn(
                   "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
-                  activeMarket === market.id
+                  activeMarket === m.id
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground",
                 )}
               >
-                <span aria-hidden>{market.flag}</span>
-                {t(market.labelKey)}
+                <span aria-hidden>{m.flag}</span>
+                {t(m.labelKey)}
               </button>
             ))}
           </div>

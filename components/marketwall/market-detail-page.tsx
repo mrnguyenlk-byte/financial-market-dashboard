@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 
@@ -8,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useLang } from "@/lib/i18n"
 import { spark, toTrend } from "@/lib/market-utils"
 import type { SymbolDetailRecord } from "@/lib/symbol-detail"
-import { ChangePill, Sparkline, fmt } from "./shared"
+import { ChangePill, fmt } from "./shared"
+import { LightweightChart, pointsFromValues } from "./lightweight-chart"
 import { SymbolLogo } from "./symbol-logo"
 import { RiskWarning } from "./risk-warning"
 
@@ -17,6 +19,16 @@ export function MarketDetailPage({ record }: { record: SymbolDetailRecord }) {
   const up = record.mockChangePercent >= 0
   const trend = toTrend(record.mockChangePercent)
   const sparkData = spark(record.symbol.length * 7, 24, trend === "up" ? 1 : -1)
+  const chartSeries = useMemo(
+    () => [
+      {
+        data: pointsFromValues(sparkData),
+        color: up ? "var(--gain)" : "var(--loss)",
+        lineWidth: 2,
+      },
+    ],
+    [sparkData, up],
+  )
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-4">
@@ -92,13 +104,13 @@ export function MarketDetailPage({ record }: { record: SymbolDetailRecord }) {
             </TabsContent>
 
             <TabsContent value="chart" className="mt-4">
-              <div className="flex h-56 items-center justify-center rounded-lg border border-border bg-chart-bg">
-                <Sparkline
-                  data={sparkData}
-                  positive={up}
-                  className="h-40 w-full max-w-lg px-6"
-                  width={480}
-                  height={160}
+              <div className="overflow-hidden rounded-lg border border-border bg-chart-bg">
+                <LightweightChart
+                  series={chartSeries}
+                  height={224}
+                  variant="area"
+                  showGrid
+                  className="h-56 w-full"
                 />
               </div>
               <p className="mt-2 text-xs text-muted-foreground">{t("misc.delayed")}</p>

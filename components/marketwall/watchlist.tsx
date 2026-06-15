@@ -1,29 +1,24 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 
 import { Plus, Star, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { clientDebug, features } from "@/lib/config/features"
 import { useLang } from "@/lib/i18n"
+import {
+  useCryptoMarkets,
+  useGlobalMarkets,
+  useVietnamMarkets,
+} from "@/lib/swr/use-market-apis"
 import { useWatchlist } from "@/lib/use-watchlist"
 import { WATCHLIST_CATALOG, type WatchlistSymbol } from "@/lib/watchlist"
 import { buildWatchlistQuoteMap, getWatchlistQuote, type WatchlistQuote } from "@/lib/watchlist-quotes"
-import type {
-  CryptoAsset,
-  GlobalQuote,
-  VietnamMarketIndex,
-} from "@/lib/market-types"
 
 import { ChangePill, Sparkline, SectionHeading, fmt } from "./shared"
 import { SymbolLogo } from "./symbol-logo"
-
-type MarketsBundle = {
-  vietnamIndices: VietnamMarketIndex[]
-  globalQuotes: GlobalQuote[]
-  cryptoAssets: CryptoAsset[]
-}
 
 function WatchlistRow({
   symbol,
@@ -79,61 +74,23 @@ function WatchlistRow({
 export function Watchlist() {
   const { t } = useLang()
   const { symbols, add, remove, available } = useWatchlist()
-  const [quotes, setQuotes] = useState<Map<WatchlistSymbol, WatchlistQuote>>(() =>
-    buildWatchlistQuoteMap(symbols),
-  )
 
-  useEffect(() => {
-    let cancelled = false
+  const vietnam = useVietnamMarkets()
+  const global = useGlobalMarkets()
+  const crypto = useCryptoMarkets()
 
-    async function loadQuotes() {
-      try {
-        const [vietnamRes, globalRes, cryptoRes] = await Promise.all([
-          fetch("/api/vietnam-markets", { cache: "no-store" }),
-          fetch("/api/global-markets", { cache: "no-store" }),
-          fetch("/api/crypto", { cache: "no-store" }),
-        ])
-
-        const bundle: MarketsBundle = {
-          vietnamIndices: [],
-          globalQuotes: [],
-          cryptoAssets: [],
-        }
-
-        if (vietnamRes.ok) {
-          const data = (await vietnamRes.json()) as { indices?: VietnamMarketIndex[] }
-          bundle.vietnamIndices = data.indices ?? []
-        }
-
-        if (globalRes.ok) {
-          const data = (await globalRes.json()) as { quotes?: GlobalQuote[] }
-          bundle.globalQuotes = data.quotes ?? []
-        }
-
-        if (cryptoRes.ok) {
-          const data = (await cryptoRes.json()) as { assets?: CryptoAsset[] }
-          bundle.cryptoAssets = data.assets ?? []
-        }
-
-        if (!cancelled) {
-          setQuotes(
-            buildWatchlistQuoteMap(symbols, {
-              vietnamIndices: bundle.vietnamIndices,
-              globalQuotes: bundle.globalQuotes,
-              cryptoAssets: bundle.cryptoAssets,
-            }),
-          )
-        }
-      } catch {
-        if (!cancelled) setQuotes(buildWatchlistQuoteMap(symbols))
-      }
+  const quotes = useMemo(() => {
+    if (!features.liveClientFetch) {
+      clientDebug("Watchlist", "using static fallback")
+      return buildWatchlistQuoteMap(symbols)
     }
 
-    loadQuotes()
-    return () => {
-      cancelled = true
-    }
-  }, [symbols])
+    return buildWatchlistQuoteMap(symbols, {
+      vietnamIndices: vietnam.data?.indices ?? [],
+      globalQuotes: global.data?.quotes ?? [],
+      cryptoAssets: crypto.data?.assets ?? [],
+    })
+  }, [symbols, vietnam.data, global.data, crypto.data])
 
   return (
     <section aria-labelledby="watchlist-title">

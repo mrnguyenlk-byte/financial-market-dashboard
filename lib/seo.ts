@@ -5,22 +5,10 @@ function resolveSiteUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "")
   if (fromEnv) return fromEnv
 
-  const vercelUrl = process.env.VERCEL_URL
-  if (vercelUrl) return `https://${vercelUrl}`
-
   return SITE_DOMAIN
 }
 
 export const SITE_URL = resolveSiteUrl()
-
-export const LEGAL_SITEMAP_PATHS = [
-  "/legal/terms",
-  "/legal/privacy",
-  "/legal/cookies",
-  "/legal/risk-disclosure",
-  "/legal/disclaimer",
-  "/legal/partner-disclosure",
-] as const
 
 const DEFAULT_ROBOTS: Metadata["robots"] = {
   index: true,

@@ -1,17 +1,18 @@
 export const features = {
   symbolModal: false,
   watchlist: false,
-  liveClientFetch: false,
+  liveClientFetch: true,
   /** Hidden until a reliable public FX strength feed is wired. */
   currencyStrength: false,
-  clientDebug: true,
+  /** Dynamic /markets/[symbol] pages — off until symbol detail flow is stable. */
+  dynamicMarketPages: false,
 } as const
 
 export type FeatureFlags = typeof features
 
-/** Dev-only client logging gated by `features.clientDebug`. */
+/** Dev-only client logging. */
 export function clientDebug(label: string, ...args: unknown[]): void {
-  if (features.clientDebug && process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "development") {
     console.debug(`[BTrading] ${label}`, ...args)
   }
 }

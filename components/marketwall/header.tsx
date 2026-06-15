@@ -88,16 +88,18 @@ export function Header() {
 
           {/* Notifications */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative"
-                aria-label={t("action.notifications")}
-              >
-                <Bell className="size-5" />
-                <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-loss ring-2 ring-background" />
-              </Button>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative"
+                  aria-label={t("action.notifications")}
+                />
+              }
+            >
+              <Bell className="size-5" />
+              <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-loss ring-2 ring-background" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
               <DropdownMenuLabel className="flex items-center justify-between">
@@ -140,15 +142,17 @@ export function Header() {
 
           {/* Mobile nav */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="xl:hidden"
-                aria-label="Menu"
-              >
-                <Menu className="size-5" />
-              </Button>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="xl:hidden"
+                  aria-label="Menu"
+                />
+              }
+            >
+              <Menu className="size-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52">
               {navKeys.map((key) => (

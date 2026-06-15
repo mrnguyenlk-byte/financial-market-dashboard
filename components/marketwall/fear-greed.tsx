@@ -1,7 +1,7 @@
 "use client"
 
 import { useLang } from "@/lib/i18n"
-import { fgLabel, type FearGreedItem } from "@/lib/market-data"
+import { fgLabel, type FearGreedItem } from "@/lib/fear-greed"
 import { cn } from "@/lib/utils"
 
 function sentimentTone(value: number) {

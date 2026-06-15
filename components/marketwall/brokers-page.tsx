@@ -9,7 +9,7 @@ import {
   vnStockPlatforms,
   type Broker,
   type BrokerBadge,
-} from "@/lib/market-data"
+} from "@/lib/broker-data"
 import { cn } from "@/lib/utils"
 
 const BADGE_STYLES: Record<BrokerBadge, string> = {

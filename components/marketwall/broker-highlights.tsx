@@ -4,7 +4,7 @@ import { ExternalLink, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useLang } from "@/lib/i18n"
-import { featuredPlatforms } from "@/lib/market-data"
+import { featuredPlatforms } from "@/lib/broker-data"
 import { SectionHeading } from "./shared"
 
 function BrokerLogo({ initials }: { initials: string }) {

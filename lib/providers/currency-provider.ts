@@ -74,7 +74,7 @@ export async function getDataAsync(): Promise<ProviderResult<CurrencyData>> {
   }
 }
 
-/** Synchronous accessor for client components — uses mock until live FX is enabled. */
+/** Synchronous accessor for server-side mock data. */
 export function getData(): CurrencyData {
   return getMockData()
 }

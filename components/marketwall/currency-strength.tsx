@@ -3,11 +3,12 @@
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLang } from "@/lib/i18n"
-import { getData } from "@/lib/providers/currency-provider"
+import {
+  currencyStrengthChartMeta,
+  currencyStrengthItems as currencyStrength,
+} from "@/lib/currency-strength-mock"
 import { SectionHeading } from "./shared"
 import { cn } from "@/lib/utils"
-
-const { items: currencyStrength, chartMeta: currencyStrengthChartMeta } = getData()
 
 const CHART_W = 720
 const CHART_H = 228

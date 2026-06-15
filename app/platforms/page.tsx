@@ -1,6 +1,9 @@
 import { Header } from "@/components/marketwall/header"
 import { Footer } from "@/components/marketwall/footer"
 import { BrokersPageContent } from "@/components/marketwall/brokers-page"
+import { platformsMetadata } from "@/lib/seo"
+
+export const metadata = platformsMetadata
 
 export default function PlatformsPage() {
   return (

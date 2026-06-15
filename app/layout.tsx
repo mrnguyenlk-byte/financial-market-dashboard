@@ -1,4 +1,4 @@
-import { Analytics } from '@vercel/analytics/next'
+import { Analytics } from "@vercel/analytics/react"
 
 import type { Metadata, Viewport } from 'next'
 
@@ -8,7 +8,8 @@ import { LanguageProvider } from '@/lib/i18n'
 
 import { ThemeProvider } from '@/lib/theme'
 
-import { SITE_NAME } from '@/lib/brand'
+import { SITE_NAME, SITE_LOGO } from '@/lib/brand'
+import { SITE_URL } from '@/lib/seo'
 
 import { ContactFab } from '@/components/marketwall/contact-fab'
 
@@ -33,23 +34,27 @@ const themeInitScript = `(function(){try{var t=localStorage.getItem('theme');var
 
 
 export const metadata: Metadata = {
-
-  title: `${SITE_NAME} — Financial Market Information Platform`,
-
-  description:
-
-    'BTrading Market Insights is an independent financial information platform providing market information, market analytics, platform comparisons and educational content. Informational use only — not investment advice.',
-
-  generator: 'v0.app',
-
-  icons: {
-
-    icon: '/brand/logo.png',
-
-    apple: '/brand/logo.png',
-
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'BTrading Market Insights | Global Market Analytics',
+    template: '%s | BTrading Market Insights',
   },
-
+  description:
+    'Market data, heatmaps, economic calendar, market analytics and platform comparisons.',
+  icons: {
+    icon: '/brand/logo.png',
+    apple: '/brand/logo.png',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: SITE_NAME,
+    images: [{ url: SITE_LOGO, alt: SITE_NAME }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [SITE_LOGO],
+  },
 }
 
 
@@ -109,7 +114,7 @@ export default function RootLayout({
 
         </ThemeProvider>
 
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <Analytics />
 
       </body>
 

@@ -1,6 +1,9 @@
 import { Header } from "@/components/marketwall/header"
 import { Footer } from "@/components/marketwall/footer"
 import { ContactPageContent } from "@/components/marketwall/contact-page"
+import { contactMetadata } from "@/lib/seo"
+
+export const metadata = contactMetadata
 
 export default function ContactPage() {
   return (

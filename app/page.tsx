@@ -5,6 +5,7 @@ import { getMockData as getCryptoMock } from "@/lib/providers/crypto-provider"
 import { getMockData as getNewsMock } from "@/lib/providers/news-provider"
 import { getMockData as getCalendarMock } from "@/lib/providers/calendar-provider"
 import { fearGreedData } from "@/lib/market-data"
+import { homeMetadata } from "@/lib/seo"
 import { Header } from "@/components/marketwall/header"
 import { TickerBar } from "@/components/marketwall/ticker-bar"
 import { Sidebar } from "@/components/marketwall/sidebar"
@@ -16,6 +17,8 @@ import { MarketNews } from "@/components/marketwall/market-news"
 import { BrokerHighlights } from "@/components/marketwall/broker-highlights"
 import { RiskWarning } from "@/components/marketwall/risk-warning"
 import { Footer } from "@/components/marketwall/footer"
+
+export const metadata = homeMetadata
 
 export default async function Page() {
   let dashboard

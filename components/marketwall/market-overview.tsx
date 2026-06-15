@@ -19,6 +19,7 @@ import { reorderIndicesTab } from "@/lib/overview-order"
 import { mergeVietnamIndicesIntoOverview } from "@/lib/vietnam-market-merge"
 
 import { useLang } from "@/lib/i18n"
+import { useSymbolDetail } from "@/lib/symbol-detail-context"
 
 import type { OverviewCategory, OverviewListItem } from "@/lib/market-data"
 
@@ -72,17 +73,19 @@ const TABS: OverviewCategory[] = ["indices", "commodities", "crypto", "forex"]
 
 
 
-function OverviewRow({ item }: { item: OverviewListItem }) {
-
+function OverviewRow({
+  item,
+  onSelect,
+}: {
+  item: OverviewListItem
+  onSelect: (symbol: string) => void
+}) {
   const up = item.trend === "up"
-
   return (
-
     <li>
-
       <button
-
         type="button"
+        onClick={() => onSelect(item.symbol)}
 
         className="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-secondary/50"
 
@@ -151,6 +154,7 @@ export function MarketOverview({
 }) {
 
   const { t } = useLang()
+  const { openDetail } = useSymbolDetail()
 
   const [tab, setTab] = useState<OverviewCategory>("indices")
 
@@ -329,7 +333,7 @@ export function MarketOverview({
 
           {items.map((item) => (
 
-            <OverviewRow key={item.symbol} item={item} />
+            <OverviewRow key={item.symbol} item={item} onSelect={openDetail} />
 
           ))}
 

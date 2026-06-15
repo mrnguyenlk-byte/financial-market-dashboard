@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
 import { LanguageProvider } from '@/lib/i18n'
+import { SymbolDetailProvider } from '@/lib/symbol-detail-context'
 
 import { ThemeProvider } from '@/lib/theme'
 
@@ -126,8 +127,10 @@ export default function RootLayout({
         <ThemeProvider>
 
           <LanguageProvider>
-            {children}
-            <ContactFab />
+            <SymbolDetailProvider>
+              {children}
+              <ContactFab />
+            </SymbolDetailProvider>
           </LanguageProvider>
 
         </ThemeProvider>

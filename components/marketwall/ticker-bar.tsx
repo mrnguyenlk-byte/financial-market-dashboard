@@ -13,6 +13,7 @@ import { mergeGlobalQuotesIntoTickerItems } from "@/lib/global-market-merge"
 import { mergeVietnamIndicesIntoTickerItems } from "@/lib/vietnam-market-merge"
 
 import { useLang } from "@/lib/i18n"
+import { useSymbolDetail } from "@/lib/symbol-detail-context"
 
 import type { TickerBarItem } from "@/lib/market-data"
 
@@ -62,17 +63,16 @@ type CryptoApiResponse = {
 
 
 
-function TickerItem({ item }: { item: TickerBarItem }) {
-
+function TickerItem({ item, onSelect }: { item: TickerBarItem; onSelect: (symbol: string) => void }) {
   const up = item.trend === "up"
-
   const absChange = (item.price * item.changePercent) / 100
 
-
-
   return (
-
-    <div className="flex items-center gap-2 whitespace-nowrap px-4 py-2">
+    <button
+      type="button"
+      onClick={() => onSelect(item.symbol)}
+      className="flex items-center gap-2 whitespace-nowrap px-4 py-2 transition-colors hover:bg-secondary/40"
+    >
 
       <SymbolLogo symbol={item.symbol} size="sm" />
 
@@ -114,7 +114,7 @@ function TickerItem({ item }: { item: TickerBarItem }) {
 
       />
 
-    </div>
+    </button>
 
   )
 
@@ -125,6 +125,7 @@ function TickerItem({ item }: { item: TickerBarItem }) {
 export function TickerBar({ items: fallbackItems }: { items: TickerBarItem[] }) {
 
   const { t } = useLang()
+  const { openDetail } = useSymbolDetail()
 
   const [items, setItems] = useState(fallbackItems)
 
@@ -261,13 +262,13 @@ export function TickerBar({ items: fallbackItems }: { items: TickerBarItem[] }) 
 
           {symbols.map((s) => (
 
-            <TickerItem key={`a-${s}`} item={itemBySymbol[s]} />
+            <TickerItem key={`a-${s}`} item={itemBySymbol[s]} onSelect={openDetail} />
 
           ))}
 
           {symbols.map((s) => (
 
-            <TickerItem key={`b-${s}`} item={itemBySymbol[s]} />
+            <TickerItem key={`b-${s}`} item={itemBySymbol[s]} onSelect={openDetail} />
 
           ))}
 

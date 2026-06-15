@@ -62,6 +62,28 @@ const dict: Dict = {
   },
   "watchlist.addSymbol": { vi: "Thêm mã", en: "Add symbol" },
   "watchlist.remove": { vi: "Xóa khỏi danh mục", en: "Remove from watchlist" },
+
+  // Symbol detail modal
+  "symbolDetail.overview": { vi: "Tổng quan", en: "Overview" },
+  "symbolDetail.chart": { vi: "Biểu đồ", en: "Chart" },
+  "symbolDetail.financials": { vi: "Tài chính", en: "Financials" },
+  "symbolDetail.news": { vi: "Tin tức", en: "News" },
+  "symbolDetail.viewFullPage": { vi: "Xem trang đầy đủ", en: "View full page" },
+  "symbolDetail.addWatchlist": { vi: "Thêm vào danh mục", en: "Add to watchlist" },
+  "symbolDetail.exchange": { vi: "Sàn", en: "Exchange" },
+  "symbolDetail.disclaimer": {
+    vi: "Dữ liệu minh họa, có thể trễ. Không phải lời khuyên đầu tư.",
+    en: "Illustrative data, may be delayed. Not investment advice.",
+  },
+  "symbolDetail.financialsPlaceholder": {
+    vi: "Báo cáo tài chính sẽ được cập nhật trong phiên bản tiếp theo.",
+    en: "Financial statements will be available in a future release.",
+  },
+  "symbolDetail.newsPlaceholder": {
+    vi: "Tin tức liên quan đến mã sẽ hiển thị tại đây.",
+    en: "Related news for this symbol will appear here.",
+  },
+  "action.close": { vi: "Đóng", en: "Close" },
   "sec.brokers": { vi: "So sánh nền tảng", en: "Platform Comparison" },
   "sec.heatmaps": { vi: "Bản đồ nhiệt thị trường", en: "Market Heatmaps" },
 

@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/lib/i18n"
+import { useSymbolDetail } from "@/lib/symbol-detail-context"
 import type { HeatmapMarket, HeatmapMarketId, HeatmapTile, VnExchangeId } from "@/lib/market-data"
 import { SectionHeading, fmt, heatStyle } from "./shared"
 import { HeatmapGridSkeleton } from "./data-skeletons"
@@ -66,6 +67,7 @@ function priceSize(weight: number) {
 
 function HeatGrid({ tiles }: { tiles: HeatmapTile[] }) {
   const { lang } = useLang()
+  const { openDetail } = useSymbolDetail()
 
   return (
     <div className="grid h-full grid-flow-dense auto-rows-[minmax(48px,1fr)] grid-cols-6 gap-px bg-heatmap-gap sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12">
@@ -77,6 +79,7 @@ function HeatGrid({ tiles }: { tiles: HeatmapTile[] }) {
           <button
             key={tile.symbol}
             type="button"
+            onClick={() => openDetail(tile.symbol)}
             style={heatStyle(tile.changePercent)}
             className={cn(
               "group/tile flex flex-col items-start justify-between rounded-none border border-black/20 p-1.5 text-left transition-[filter,transform] hover:z-10 hover:brightness-110 lg:p-2.5",

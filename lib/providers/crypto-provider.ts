@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Bi, type Trend, toTrend, spark } from "@/lib/market-utils"
 import type { HeatmapTile } from "@/lib/providers/heatmap-provider"
 import { CACHE_KEYS } from "@/lib/providers/cache"
@@ -254,6 +256,7 @@ export async function getHeatmapData(): Promise<ProviderResult<MarketHeatmap>> {
   return {
     data: heatmap,
     source: crypto.source,
+    fallback: crypto.source !== "live",
     provider: "coingecko",
     fetchedAt: new Date().toISOString(),
   }

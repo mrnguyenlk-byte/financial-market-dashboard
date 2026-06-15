@@ -1,3 +1,5 @@
+import "server-only"
+
 import { safeFetchJson } from "@/lib/providers/fetch-utils"
 import type {
   AdapterFetchResult,

@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Bi } from "@/lib/market-utils"
 
 export type HeatmapTile = {

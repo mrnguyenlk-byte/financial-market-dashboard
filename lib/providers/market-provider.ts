@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Bi, type Trend, toTrend, spark } from "@/lib/market-utils"
 import { CACHE_KEYS } from "@/lib/providers/cache"
 import { getData as getCryptoData, getMockData as getCryptoMock } from "@/lib/providers/crypto-provider"

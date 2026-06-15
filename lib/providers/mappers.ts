@@ -1,3 +1,5 @@
+import "server-only"
+
 import type { Bi } from "@/lib/market-utils"
 import type { CryptoAsset } from "@/lib/providers/crypto-provider"
 import type { GlobalQuote } from "@/lib/providers/global-market-provider"

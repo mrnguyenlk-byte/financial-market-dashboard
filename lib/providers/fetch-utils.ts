@@ -1,3 +1,5 @@
+import "server-only"
+
 export const DEFAULT_FETCH_TIMEOUT_MS = 8_000
 
 export async function fetchWithTimeout(

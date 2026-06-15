@@ -1,9 +1,13 @@
+import "server-only"
+
 import { cachedProvider } from "@/lib/providers/cache"
 import type { DataSource } from "@/lib/providers/types"
 
 export type ProviderResult<T> = {
   data: T
   source: DataSource
+  /** True when mock or error fallback data is returned instead of live upstream. */
+  fallback: boolean
   provider: string
   fetchedAt: string
   fromCache?: boolean
@@ -30,6 +34,7 @@ function result<T>(
   return {
     data,
     source,
+    fallback: source === "mock" || Boolean(extra?.error),
     provider,
     fetchedAt: new Date().toISOString(),
     ...extra,

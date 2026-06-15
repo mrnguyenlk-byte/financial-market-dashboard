@@ -1,3 +1,5 @@
+import "server-only"
+
 import type { AdapterFetchResult, NormalizedVietnamMarket, VietnamAdapterId, VietnamMarketAdapter } from "./types"
 import { fireantAdapter } from "./fireant-adapter"
 import { tcbsAdapter } from "./tcbs-adapter"

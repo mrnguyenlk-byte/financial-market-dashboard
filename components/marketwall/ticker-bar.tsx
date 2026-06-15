@@ -8,6 +8,8 @@ import { Radio } from "lucide-react"
 
 import { mergeCryptoAssetsIntoTickerItems } from "@/lib/crypto-market-merge"
 
+import { clientDebug, features } from "@/lib/config/features"
+
 import { mergeGlobalQuotesIntoTickerItems } from "@/lib/global-market-merge"
 
 import { mergeVietnamIndicesIntoTickerItems } from "@/lib/vietnam-market-merge"
@@ -129,9 +131,16 @@ export function TickerBar({ items: fallbackItems }: { items: TickerBarItem[] }) 
 
   const [items, setItems] = useState(fallbackItems)
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState<boolean>(features.liveClientFetch)
 
   useEffect(() => {
+    if (!features.liveClientFetch) {
+      clientDebug("TickerBar", "using static fallback")
+      setItems(fallbackItems)
+      setLoading(false)
+      return
+    }
+
     let cancelled = false
 
     async function loadTickerData() {
@@ -260,17 +269,17 @@ export function TickerBar({ items: fallbackItems }: { items: TickerBarItem[] }) 
 
         <div className="ticker-track flex w-max items-center divide-x divide-border/60">
 
-          {symbols.map((s) => (
+          {symbols.map((s) => {
+            const item = itemBySymbol[s]
+            if (!item) return null
+            return <TickerItem key={`a-${s}`} item={item} onSelect={openDetail} />
+          })}
 
-            <TickerItem key={`a-${s}`} item={itemBySymbol[s]} onSelect={openDetail} />
-
-          ))}
-
-          {symbols.map((s) => (
-
-            <TickerItem key={`b-${s}`} item={itemBySymbol[s]} onSelect={openDetail} />
-
-          ))}
+          {symbols.map((s) => {
+            const item = itemBySymbol[s]
+            if (!item) return null
+            return <TickerItem key={`b-${s}`} item={item} onSelect={openDetail} />
+          })}
 
         </div>
 

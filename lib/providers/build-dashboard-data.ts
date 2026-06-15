@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Trend, toTrend, spark } from "@/lib/market-utils"
 import { getMockData as getMarketMock } from "@/lib/providers/market-provider"
 import type { TickerBarItem, OverviewCategory, OverviewListItem } from "@/lib/providers/market-provider"
@@ -5,6 +7,7 @@ import { getMockData as getHeatmapMock } from "@/lib/providers/heatmap-provider"
 import type { HeatmapMarket } from "@/lib/providers/heatmap-provider"
 import {
   getData as getCryptoData,
+  getMockData as getCryptoMock,
   deriveCryptoFearGreed,
   type CryptoAsset,
 } from "@/lib/providers/crypto-provider"
@@ -117,16 +120,32 @@ function buildFearGreedItems(cryptoAssets: CryptoAsset[]): FearGreedItem[] {
 }
 
 export async function buildDashboardData(): Promise<DashboardData> {
-  const [vietnam, globalMarket, crypto] = await Promise.all([
-    getVietnamMarketData(),
-    getGlobalMarketData(),
-    getCryptoData(),
-  ])
-
   const marketMock = getMarketMock()
   const heatmapMock = getHeatmapMock()
 
-  const quoteMap = buildQuoteMap(vietnam.indices, globalMarket.quotes, crypto.assets)
+  let vietnamIndices: VietnamMarketIndex[] = []
+  let globalQuotes: GlobalQuote[] = []
+  let cryptoAssets: CryptoAsset[] = []
+  let vnHeatmapMarket: HeatmapMarket | null = null
+  let cryptoHeatmapTiles: HeatmapMarket["tiles"] = []
+
+  try {
+    const [vietnam, globalMarket, crypto] = await Promise.all([
+      getVietnamMarketData(),
+      getGlobalMarketData(),
+      getCryptoData(),
+    ])
+    vietnamIndices = vietnam.indices ?? []
+    globalQuotes = globalMarket.quotes ?? []
+    cryptoAssets = crypto.assets ?? []
+    vnHeatmapMarket = vietnam.heatmapMarket ?? pickHeatmapMarket(heatmapMock.markets, "vn")
+    cryptoHeatmapTiles = crypto.heatmapTiles ?? []
+  } catch {
+    vnHeatmapMarket = pickHeatmapMarket(heatmapMock.markets, "vn")
+    cryptoHeatmapTiles = getCryptoMock().heatmapTiles
+  }
+
+  const quoteMap = buildQuoteMap(vietnamIndices, globalQuotes, cryptoAssets)
 
   const dashboardTickerBarItems = marketMock.dashboardTickerBarItems.map((item) =>
     overlayTickerItem(item, quoteMap.get(item.symbol)),
@@ -145,17 +164,19 @@ export async function buildDashboardData(): Promise<DashboardData> {
   const cryptoMarket = pickHeatmapMarket(heatmapMock.markets, "crypto")
 
   const heatmapMarkets: HeatmapMarket[] = [
-    vietnam.heatmapMarket,
+    ...(vnHeatmapMarket ? [vnHeatmapMarket] : []),
     ...(usMarket ? [usMarket] : []),
-    ...(cryptoMarket
-      ? [{ ...cryptoMarket, tiles: crypto.heatmapTiles }]
-      : []),
+    ...(cryptoMarket && cryptoHeatmapTiles.length
+      ? [{ ...cryptoMarket, tiles: cryptoHeatmapTiles }]
+      : cryptoMarket
+        ? [cryptoMarket]
+        : []),
   ]
 
   return {
     dashboardTickerBarItems,
     overviewByCategory,
     heatmapMarkets,
-    fearGreedItems: buildFearGreedItems(crypto.assets),
+    fearGreedItems: buildFearGreedItems(cryptoAssets),
   }
 }

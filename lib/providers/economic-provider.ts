@@ -1,3 +1,5 @@
+import "server-only"
+
 import { safeFetchJson } from "@/lib/providers/fetch-utils"
 import { CACHE_KEYS } from "@/lib/providers/cache"
 import { chainProviders } from "@/lib/providers/fallback"

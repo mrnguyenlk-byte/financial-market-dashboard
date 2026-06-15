@@ -1,3 +1,5 @@
+import "server-only"
+
 import type { DataSource } from "@/lib/providers/types"
 
 type CacheEntry<T> = {

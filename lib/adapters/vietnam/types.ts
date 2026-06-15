@@ -1,3 +1,5 @@
+import "server-only"
+
 import type { Bi } from "@/lib/market-utils"
 import type { VnExchangeId } from "@/lib/providers/heatmap-provider"
 

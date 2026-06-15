@@ -1,10 +1,10 @@
 import { spark, toTrend } from "@/lib/market-utils"
-import type { GlobalQuote } from "@/lib/providers/global-market-provider"
 import type {
+  GlobalQuote,
   OverviewCategory,
   OverviewListItem,
   TickerBarItem,
-} from "@/lib/providers/market-provider"
+} from "@/lib/market-types"
 
 function seedFromSymbol(symbol: string): number {
   return symbol.split("").reduce((a, c) => a + c.charCodeAt(0), 0)

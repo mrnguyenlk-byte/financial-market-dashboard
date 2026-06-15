@@ -4,9 +4,11 @@ import type { ReactNode } from "react"
 
 import Link from "next/link"
 import { Check } from "lucide-react"
+import { features } from "@/lib/config/features"
 import { useLang } from "@/lib/i18n"
 import { MarketOverview } from "./market-overview"
 import { Watchlist } from "./watchlist"
+import { SectionErrorBoundary } from "./section-error-boundary"
 import type { OverviewCategory, OverviewListItem } from "@/lib/market-types"
 
 const SIDEBAR_W = 300
@@ -132,8 +134,14 @@ export function Sidebar({
     <div className="flex w-full max-w-[300px] flex-col gap-3 lg:w-[300px]">
       <PromoBanner href="/brokers" />
       <PartnerBanner href="/contact" />
-      <Watchlist />
-      <MarketOverview overviewByCategory={overviewByCategory} />
+      {features.watchlist && (
+        <SectionErrorBoundary name="watchlist">
+          <Watchlist />
+        </SectionErrorBoundary>
+      )}
+      <SectionErrorBoundary name="market-overview">
+        <MarketOverview overviewByCategory={overviewByCategory} />
+      </SectionErrorBoundary>
     </div>
   )
 }

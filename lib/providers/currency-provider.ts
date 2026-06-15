@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Bi, type Trend, strengthSeries } from "@/lib/market-utils"
 import { CACHE_KEYS } from "@/lib/providers/cache"
 import { withFallback, type ProviderResult } from "@/lib/providers/fallback"

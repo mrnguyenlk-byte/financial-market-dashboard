@@ -1,3 +1,5 @@
+import "server-only"
+
 // Centralized mock data for BTrading Market Insights.
 // Illustrative placeholder values only — not real-time prices.
 // Replace provider getData() implementations with API responses when wiring live data.

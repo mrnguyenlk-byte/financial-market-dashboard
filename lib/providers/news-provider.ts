@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Bi } from "@/lib/market-utils"
 import { fetchNewsFromRss, type NormalizedNewsItem } from "@/lib/news/rss"
 

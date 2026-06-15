@@ -1,4 +1,4 @@
-import type { OverviewListItem } from "@/lib/providers/market-provider"
+import type { OverviewListItem } from "@/lib/market-types"
 
 /** Preferred display order for the indices overview tab. */
 export const INDICES_TAB_SYMBOL_ORDER = [

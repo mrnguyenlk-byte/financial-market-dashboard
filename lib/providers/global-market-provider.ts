@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Trend, toTrend, spark } from "@/lib/market-utils"
 import { CACHE_KEYS } from "@/lib/providers/cache"
 import { fetchWithTimeout, safeFetchJson } from "@/lib/providers/fetch-utils"

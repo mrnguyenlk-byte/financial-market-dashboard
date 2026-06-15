@@ -1,3 +1,5 @@
+import "server-only"
+
 import { type Bi, toTrend, spark } from "@/lib/market-utils"
 import {
   HOSE_SEEDS,

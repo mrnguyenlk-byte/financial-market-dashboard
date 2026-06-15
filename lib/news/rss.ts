@@ -1,3 +1,5 @@
+import "server-only"
+
 import { fetchWithTimeout } from "@/lib/providers/fetch-utils"
 
 export type NormalizedNewsItem = {

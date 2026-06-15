@@ -1,11 +1,11 @@
 import { spark, toTrend, type Bi } from "@/lib/market-utils"
-import type { HeatmapMarket } from "@/lib/providers/heatmap-provider"
 import type {
+  HeatmapMarket,
   OverviewCategory,
   OverviewListItem,
   TickerBarItem,
-} from "@/lib/providers/market-provider"
-import type { VietnamMarketIndex } from "@/lib/providers/vietnam-market-provider"
+  VietnamMarketIndex,
+} from "@/lib/market-types"
 
 /** Maps provider symbols to legacy dashboard symbols used in ticker / overview mock data. */
 export const VIETNAM_SYMBOL_ALIASES: Record<string, string> = {

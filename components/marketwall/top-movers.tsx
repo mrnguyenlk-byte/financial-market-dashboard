@@ -3,7 +3,7 @@
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLang } from "@/lib/i18n"
-import { topMovers, type TopMover } from "@/lib/market-data"
+import { topMovers, type TopMover } from "@/lib/dashboard-section-mocks"
 import { ChangePill, SectionHeading, fmt } from "./shared"
 
 function MoverList({

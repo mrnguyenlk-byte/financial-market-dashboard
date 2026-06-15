@@ -17,7 +17,7 @@ import {
   type VietnamMarketIndex,
 } from "@/lib/providers/vietnam-market-provider"
 import { buildVietnamMarketIndexQuoteMap } from "@/lib/vietnam-market-merge"
-import { fearGreedData, type FearGreedItem } from "@/lib/market-data"
+import { fearGreedData, type FearGreedItem } from "@/lib/fear-greed"
 
 export type DashboardData = {
   dashboardTickerBarItems: TickerBarItem[]

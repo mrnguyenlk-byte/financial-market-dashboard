@@ -7,7 +7,7 @@ import { Check } from "lucide-react"
 import { useLang } from "@/lib/i18n"
 import { MarketOverview } from "./market-overview"
 import { Watchlist } from "./watchlist"
-import type { OverviewCategory, OverviewListItem } from "@/lib/market-data"
+import type { OverviewCategory, OverviewListItem } from "@/lib/market-types"
 
 const SIDEBAR_W = 300
 

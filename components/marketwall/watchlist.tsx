@@ -10,9 +10,11 @@ import { useLang } from "@/lib/i18n"
 import { useWatchlist } from "@/lib/use-watchlist"
 import { WATCHLIST_CATALOG, type WatchlistSymbol } from "@/lib/watchlist"
 import { buildWatchlistQuoteMap, getWatchlistQuote, type WatchlistQuote } from "@/lib/watchlist-quotes"
-import type { CryptoAsset } from "@/lib/providers/crypto-provider"
-import type { GlobalQuote } from "@/lib/providers/global-market-provider"
-import type { VietnamMarketIndex } from "@/lib/providers/vietnam-market-provider"
+import type {
+  CryptoAsset,
+  GlobalQuote,
+  VietnamMarketIndex,
+} from "@/lib/market-types"
 
 import { ChangePill, Sparkline, SectionHeading, fmt } from "./shared"
 import { SymbolLogo } from "./symbol-logo"

@@ -21,13 +21,13 @@ import { mergeVietnamIndicesIntoOverview } from "@/lib/vietnam-market-merge"
 import { useLang } from "@/lib/i18n"
 import { useSymbolDetail } from "@/lib/symbol-detail-context"
 
-import type { OverviewCategory, OverviewListItem } from "@/lib/market-data"
-
-import type { CryptoAsset } from "@/lib/providers/crypto-provider"
-
-import type { GlobalQuote } from "@/lib/providers/global-market-provider"
-
-import type { VietnamMarketIndex } from "@/lib/providers/vietnam-market-provider"
+import type {
+  CryptoAsset,
+  GlobalQuote,
+  OverviewCategory,
+  OverviewListItem,
+  VietnamMarketIndex,
+} from "@/lib/market-types"
 
 import { OverviewListSkeleton } from "./data-skeletons"
 

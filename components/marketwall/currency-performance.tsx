@@ -2,7 +2,8 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { useLang } from "@/lib/i18n"
-import { currencyPerformance, spark } from "@/lib/market-data"
+import { currencyPerformance } from "@/lib/dashboard-section-mocks"
+import { spark } from "@/lib/market-utils"
 import { ChangePill, Sparkline, SectionHeading, fmt, signClass } from "./shared"
 import { cn } from "@/lib/utils"
 

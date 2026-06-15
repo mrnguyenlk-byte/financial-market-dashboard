@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { useLang } from "@/lib/i18n"
-import { marketBreadthData } from "@/lib/market-data"
+import { marketBreadthData } from "@/lib/dashboard-section-mocks"
 import { SectionHeading } from "./shared"
 
 function Stat({ label, value, tone }: { label: string; value: number; tone?: "gain" | "loss" }) {

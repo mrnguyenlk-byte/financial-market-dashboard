@@ -2,9 +2,11 @@ import { spark, toTrend, type Trend } from "@/lib/market-utils"
 import { buildCryptoAssetQuoteMap } from "@/lib/crypto-market-merge"
 import { buildGlobalQuoteMap } from "@/lib/global-market-merge"
 import { buildVietnamMarketIndexQuoteMap } from "@/lib/vietnam-market-merge"
-import type { CryptoAsset } from "@/lib/providers/crypto-provider"
-import type { GlobalQuote } from "@/lib/providers/global-market-provider"
-import type { VietnamMarketIndex } from "@/lib/providers/vietnam-market-provider"
+import type {
+  CryptoAsset,
+  GlobalQuote,
+  VietnamMarketIndex,
+} from "@/lib/market-types"
 import {
   WATCHLIST_CATALOG,
   type WatchlistSymbol,

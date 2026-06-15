@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 
 import { useLang } from "@/lib/i18n"
 
-import type { MarketNewsItem } from "@/lib/market-data"
+import type { MarketNewsItem } from "@/lib/market-types"
 
 import { NewsListSkeleton } from "./data-skeletons"
 

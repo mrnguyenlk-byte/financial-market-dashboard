@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/lib/i18n"
 import { useSymbolDetail } from "@/lib/symbol-detail-context"
-import type { HeatmapMarket, HeatmapMarketId, HeatmapTile, VnExchangeId } from "@/lib/market-data"
+import type { HeatmapMarket, HeatmapMarketId, HeatmapTile, VnExchangeId } from "@/lib/market-types"
 import { SectionHeading, fmt, heatStyle } from "./shared"
 import { HeatmapGridSkeleton } from "./data-skeletons"
 import { cn } from "@/lib/utils"
@@ -193,7 +193,20 @@ export function HeatmapSection({ markets }: { markets: HeatmapMarket[] }) {
     return market
   })
 
-  const current = resolvedMarkets.find((m) => m.id === activeMarket)!
+  const current =
+    resolvedMarkets.find((m) => m.id === activeMarket) ?? resolvedMarkets[0]
+
+  if (!current) {
+    return (
+      <section aria-labelledby="heatmap-title" className="min-w-0">
+        <SectionHeading title={t("sec.heatmaps")} />
+        <div className="h-[520px] rounded-lg border border-border bg-card/40 p-px">
+          <HeatmapGridSkeleton />
+        </div>
+      </section>
+    )
+  }
+
   const vnExchanges = current.exchanges ?? []
   const activeTiles =
     activeMarket === "vn"

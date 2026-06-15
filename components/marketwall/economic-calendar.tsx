@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 
 import { useLang } from "@/lib/i18n"
 
-import type { EconomicEvent } from "@/lib/market-data"
+import type { EconomicEvent } from "@/lib/market-types"
 
 import { CalendarListSkeleton } from "./data-skeletons"
 

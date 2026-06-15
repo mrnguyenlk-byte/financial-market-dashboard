@@ -51,7 +51,17 @@ const dict: Dict = {
   "sec.fearGreed": { vi: "Chỉ số Sợ hãi & Tham lam", en: "Fear & Greed Index" },
   "sec.breadth": { vi: "Độ rộng thị trường", en: "Market Breadth" },
   "sec.topMovers": { vi: "Biến động mạnh nhất", en: "Top Movers" },
-  "sec.watchlist": { vi: "Danh mục theo dõi", en: "Watchlist Preview" },
+  "sec.watchlist": { vi: "Danh mục theo dõi", en: "Watchlist" },
+  "watchlist.privacy": {
+    vi: "Lưu trên thiết bị này. Không cần đăng nhập.",
+    en: "Stored on this device only. No login required.",
+  },
+  "watchlist.empty": {
+    vi: "Thêm mã để theo dõi giá.",
+    en: "Add symbols to track prices.",
+  },
+  "watchlist.addSymbol": { vi: "Thêm mã", en: "Add symbol" },
+  "watchlist.remove": { vi: "Xóa khỏi danh mục", en: "Remove from watchlist" },
   "sec.brokers": { vi: "So sánh nền tảng", en: "Platform Comparison" },
   "sec.heatmaps": { vi: "Bản đồ nhiệt thị trường", en: "Market Heatmaps" },
 
@@ -169,7 +179,7 @@ const dict: Dict = {
   "overview.indices": { vi: "Chỉ số", en: "Indices" },
   "overview.commodities": { vi: "Hàng hóa", en: "Commodities" },
   "overview.crypto": { vi: "Crypto", en: "Crypto" },
-  "overview.forex": { vi: "Forex", en: "Forex" },
+  "overview.forex": { vi: "Tiền tệ", en: "Currencies" },
 
   // Currency strength ranks
   "strength.strongest": { vi: "Mạnh nhất", en: "Strongest" },

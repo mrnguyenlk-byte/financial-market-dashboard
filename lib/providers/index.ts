@@ -1,8 +1,49 @@
 export { DEFAULT_FETCH_TIMEOUT_MS, fetchWithTimeout, safeFetchJson } from "./fetch-utils"
 
 export {
+  DEFAULT_CACHE_TTL_MS,
+  CACHE_KEYS,
+  getCached,
+  setCached,
+  clearProviderCache,
+  cachedProvider,
+} from "./cache"
+
+export {
+  withFallback,
+  chainProviders,
+  type ProviderResult,
+} from "./fallback"
+
+export type {
+  DataSource,
+  MarketRegion,
+  MarketIndexCategory,
+  MarketIndex,
+  MarketHeatmapRegion,
+  MarketHeatmapTile,
+  MarketHeatmap,
+  CurrencyStrength,
+  EconomicEvent,
+  EconomicEventRecord,
+  EconomicCalendarData,
+} from "./types"
+
+export {
+  vietnamIndexToMarketIndex,
+  globalQuoteToMarketIndex,
+  cryptoAssetToMarketIndex,
+  heatmapTileToMarketHeatmapTile,
+  heatmapMarketToMarketHeatmap,
+  economicRecordToEvent,
+  toEconomicEvents,
+  currencyStrengthFromItem,
+} from "./mappers"
+
+export {
   getData as getCryptoData,
   getMockData as getCryptoMockData,
+  getHeatmapData as getCryptoHeatmapData,
   type CryptoData,
   type CryptoAsset,
   type CryptoQuote,
@@ -33,11 +74,15 @@ export {
 } from "./news-provider"
 
 export {
+  getData as getEconomicData,
+  getMockData as getEconomicMockData,
+} from "./economic-provider"
+
+export {
   getData as getCalendarData,
   getMockData as getCalendarMockData,
   type CalendarData,
   type CalendarEventRecord,
-  type EconomicEvent,
 } from "./calendar-provider"
 
 export { buildDashboardData, type DashboardData } from "./build-dashboard-data"
@@ -45,7 +90,10 @@ export { buildDashboardData, type DashboardData } from "./build-dashboard-data"
 export {
   getData as getMarketData,
   getMockData as getMarketMockData,
+  getIndicesData,
+  getMockIndices,
   type MarketData,
+  type MarketIndicesData,
   type TickerBarItem,
   type MarketTicker,
   type SidebarOverviewItem,
@@ -67,7 +115,9 @@ export {
 
 export {
   getData as getCurrencyData,
+  getDataAsync as getCurrencyDataAsync,
   getMockData as getCurrencyMockData,
+  getMockStrengths,
   type CurrencyData,
   type CurrencyStrengthItem,
   type CurrencyStrengthChartMeta,

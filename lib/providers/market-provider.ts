@@ -1,4 +1,15 @@
 import { type Bi, type Trend, toTrend, spark } from "@/lib/market-utils"
+import { CACHE_KEYS } from "@/lib/providers/cache"
+import { getData as getCryptoData, getMockData as getCryptoMock } from "@/lib/providers/crypto-provider"
+import { withFallback, type ProviderResult } from "@/lib/providers/fallback"
+import { getData as getGlobalData, getMockData as getGlobalMock } from "@/lib/providers/global-market-provider"
+import {
+  cryptoAssetToMarketIndex,
+  globalQuoteToMarketIndex,
+  vietnamIndexToMarketIndex,
+} from "@/lib/providers/mappers"
+import type { MarketIndex } from "@/lib/providers/types"
+import { getData as getVietnamData, getMockData as getVietnamMock } from "@/lib/providers/vietnam-market-provider"
 
 export type TickerBarItem = {
   symbol: string
@@ -55,6 +66,46 @@ export type MarketData = {
   dashboardTickerBarItems: TickerBarItem[]
   overviewByCategory: Record<OverviewCategory, OverviewListItem[]>
 }
+
+export type MarketIndicesData = {
+  indices: MarketIndex[]
+}
+
+export function getMockIndices(): MarketIndex[] {
+  const vietnam = getVietnamMock()
+  const global = getGlobalMock()
+  const crypto = getCryptoMock()
+
+  return [
+    ...vietnam.indices.map(vietnamIndexToMarketIndex),
+    ...global.quotes.map(globalQuoteToMarketIndex),
+    ...crypto.assets.slice(0, 20).map((asset) => cryptoAssetToMarketIndex(asset, "mock")),
+  ]
+}
+
+export async function getIndicesData(): Promise<ProviderResult<MarketIndex[]>> {
+  return withFallback(
+    async () => {
+      const [vietnam, global, crypto] = await Promise.all([
+        getVietnamData(),
+        getGlobalData(),
+        getCryptoData(),
+      ])
+
+      const indices = [
+        ...vietnam.indices.map(vietnamIndexToMarketIndex),
+        ...global.quotes.map(globalQuoteToMarketIndex),
+        ...crypto.assets.slice(0, 20).map((asset) => cryptoAssetToMarketIndex(asset, crypto.source)),
+      ]
+
+      return indices.length ? indices : null
+    },
+    getMockIndices,
+    { provider: "market-indices", cacheKey: CACHE_KEYS.marketIndices },
+  )
+}
+
+export type { MarketIndex }
 
 function tickerItem(
   symbol: string,

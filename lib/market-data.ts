@@ -39,7 +39,7 @@ export type {
   CurrencyStrengthChartMeta,
 } from "@/lib/providers/currency-provider"
 
-export type { EconomicEvent } from "@/lib/providers/calendar-provider"
+export type { EconomicEvent } from "@/lib/providers/economic-provider"
 export type { MarketNewsItem } from "@/lib/providers/news-provider"
 
 // Provider-backed data (backward-compatible named exports)

@@ -1,6 +1,10 @@
 import { type Bi, type Trend, toTrend, spark } from "@/lib/market-utils"
 import type { HeatmapTile } from "@/lib/providers/heatmap-provider"
+import { CACHE_KEYS } from "@/lib/providers/cache"
 import { safeFetchJson } from "@/lib/providers/fetch-utils"
+import { withFallback, type ProviderResult } from "@/lib/providers/fallback"
+import { heatmapMarketToMarketHeatmap } from "@/lib/providers/mappers"
+import type { MarketHeatmap } from "@/lib/providers/types"
 
 export type CryptoAsset = {
   id: string
@@ -206,6 +210,8 @@ function mapMarketRow(row: CoinGeckoMarketRow, fallbackRank: number): CryptoAsse
 }
 
 async function fetchCoinGeckoMarkets(): Promise<CryptoAsset[] | null> {
+  if (!isCoingeckoEnabled()) return null
+
   const url =
     "https://api.coingecko.com/api/v3/coins/markets" +
     "?vs_currency=usd&order=market_cap_desc&per_page=50&page=1" +
@@ -222,16 +228,34 @@ async function fetchCoinGeckoMarkets(): Promise<CryptoAsset[] | null> {
 }
 
 export async function getData(): Promise<CryptoData> {
-  const mock = getMockData()
+  const resolved = await withFallback(
+    fetchCoinGeckoMarkets,
+    () => MOCK_ASSETS,
+    { provider: "coingecko", cacheKey: CACHE_KEYS.crypto },
+  )
 
-  if (!isCoingeckoEnabled()) return mock
+  const source = resolved.source === "mock" ? "mock" : "live"
+  return buildCryptoData(resolved.data, source)
+}
 
-  try {
-    const live = await fetchCoinGeckoMarkets()
-    if (!live) return mock
-    return buildCryptoData(live, "live")
-  } catch {
-    return mock
+export async function getHeatmapData(): Promise<ProviderResult<MarketHeatmap>> {
+  const crypto = await getData()
+  const heatmap = heatmapMarketToMarketHeatmap(
+    {
+      id: "crypto",
+      labelKey: "heatmap.crypto",
+      flag: "₿",
+      tiles: crypto.heatmapTiles,
+    },
+    crypto.source,
+    new Date().toISOString(),
+  )
+
+  return {
+    data: heatmap,
+    source: crypto.source,
+    provider: "coingecko",
+    fetchedAt: new Date().toISOString(),
   }
 }
 

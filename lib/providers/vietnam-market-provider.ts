@@ -1,4 +1,11 @@
 import { type Bi, toTrend, spark } from "@/lib/market-utils"
+import {
+  fetchVietnamMarketFromAdapters,
+  normalizedStocksToHeatmapBuckets,
+  normalizedToProviderIndices,
+} from "@/lib/adapters/vietnam"
+import { CACHE_KEYS } from "@/lib/providers/cache"
+import { withFallback } from "@/lib/providers/fallback"
 import type {
   HeatmapExchange,
   HeatmapMarket,
@@ -335,18 +342,54 @@ export function getMockData(): VietnamMarketData {
   }
 }
 
-/**
- * Vietnam market data provider.
- * TODO: Connect real Vietnam data source (e.g. SSI / FiinGroup / exchange API)
- * for VNINDEX, VN30, VN10, HNX, UPCOM indices and HOSE / HNX / UPCOM heatmap tiles.
- */
-export async function getData(): Promise<VietnamMarketData> {
-  try {
-    // Real-time Vietnam integration will replace this mock return.
-    return getMockData()
-  } catch {
-    return getMockData()
+/** Try Vietnam adapters (TCBS public API) then fall back to enriched mock data. */
+async function fetchLiveVietnamMarketData(): Promise<VietnamMarketData | null> {
+  if (process.env.VIETNAM_MARKET_ENABLED === "false") return null
+
+  const result = await fetchVietnamMarketFromAdapters()
+  if (result.status !== "ok") return null
+
+  const mock = getMockData()
+  const { data } = result
+
+  const indices = normalizedToProviderIndices(
+    data.indices.length ? data.indices : mock.indices.map((i) => ({
+      symbol: i.symbol,
+      name: i.name,
+      exchange: i.exchange as "HOSE" | "HNX" | "UPCOM",
+      price: i.price,
+      change: i.change,
+      changePercent: i.changePercent,
+      volume: i.volume,
+      value: i.value,
+      updatedAt: i.updatedAt,
+    })),
+    "live",
+  )
+
+  const hasLiveStocks =
+    data.stocks.hose.length + data.stocks.hnx.length + data.stocks.upcom.length > 0
+
+  const heatmapStocks = hasLiveStocks
+    ? normalizedStocksToHeatmapBuckets(data.stocks)
+    : mock.heatmapStocks
+
+  return {
+    indices,
+    heatmapStocks,
+    heatmapMarket: buildHeatmapMarket(heatmapStocks),
+    source: "live",
   }
+}
+
+export async function getData(): Promise<VietnamMarketData> {
+  const resolved = await withFallback(
+    fetchLiveVietnamMarketData,
+    getMockData,
+    { provider: "vietnam-markets", cacheKey: CACHE_KEYS.vietnamMarkets },
+  )
+
+  return resolved.data
 }
 
 export function vietnamSparkline(symbol: string, trend: ReturnType<typeof toTrend>): number[] {

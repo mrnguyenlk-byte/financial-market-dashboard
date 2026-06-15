@@ -1,5 +1,7 @@
 import { type Trend, toTrend, spark } from "@/lib/market-utils"
+import { CACHE_KEYS } from "@/lib/providers/cache"
 import { fetchWithTimeout, safeFetchJson } from "@/lib/providers/fetch-utils"
+import { chainProviders } from "@/lib/providers/fallback"
 
 export type GlobalQuoteCategory = "indices" | "commodities" | "forex"
 
@@ -319,23 +321,42 @@ function buildResultFromLive(liveMap: Map<string, GlobalQuote>): GlobalMarketDat
   }
 }
 
+async function fetchLiveGlobalMarketData(): Promise<GlobalMarketData | null> {
+  const [v8, v7, stooq] = await Promise.all([
+    fetchYahooV8Quotes(),
+    fetchYahooV7Quotes(),
+    fetchStooqQuotes(),
+  ])
+
+  const liveMap = mergeLiveMaps(v8, v7, stooq)
+  if (liveMap.size < 3) return null
+
+  const result = buildResultFromLive(liveMap)
+  return result.source === "live" ? result : null
+}
+
 export async function getData(): Promise<GlobalMarketData> {
-  try {
-    const [v8, v7, stooq] = await Promise.all([
-      fetchYahooV8Quotes(),
-      fetchYahooV7Quotes(),
-      fetchStooqQuotes(),
-    ])
+  const resolved = await chainProviders(
+    [
+      { name: "yahoo-v8", fetch: async () => {
+        const map = await fetchYahooV8Quotes()
+        return map.size >= 3 ? buildResultFromLive(map) : null
+      }},
+      { name: "yahoo-v7", fetch: async () => {
+        const map = await fetchYahooV7Quotes()
+        return map.size >= 3 ? buildResultFromLive(map) : null
+      }},
+      { name: "stooq", fetch: async () => {
+        const map = await fetchStooqQuotes()
+        return map.size >= 3 ? buildResultFromLive(map) : null
+      }},
+      { name: "merged", fetch: fetchLiveGlobalMarketData },
+    ],
+    getMockData,
+    { cacheKey: CACHE_KEYS.globalMarkets },
+  )
 
-    const liveMap = mergeLiveMaps(v8, v7, stooq)
-    if (liveMap.size >= 3) {
-      return buildResultFromLive(liveMap)
-    }
-  } catch {
-    // fall through to mock
-  }
-
-  return getMockData()
+  return resolved.data
 }
 
 export function globalSparkline(symbol: string, trend: Trend): number[] {

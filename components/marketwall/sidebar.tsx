@@ -15,10 +15,10 @@ const BANNER_H = {
   partner: 198,
 } as const
 
-/** Avoid /ads/ path — blocked by common ad blockers and privacy filters. */
+/** Background-only art — text is rendered in code (i18n). */
 const BANNER_IMAGES = {
-  promo: "/banners/promo-trade.png",
-  partner: "/banners/partner-platform.png",
+  promo: "/banners/promo-trade-bg.png",
+  partner: "/banners/partner-platform-bg.png",
 } as const
 
 const PRO_BULLETS = [
@@ -49,7 +49,7 @@ function BannerShell({
       style={{ width: SIDEBAR_W, height }}
     >
       <div
-        className="relative h-full w-full bg-[#060d17] bg-cover bg-center bg-no-repeat"
+        className="relative h-full w-full bg-[#060d17] bg-cover bg-right bg-no-repeat"
         style={{ backgroundImage: `url("${imageSrc}")` }}
       >
         <div

@@ -10,16 +10,6 @@ const nextConfig = {
         destination: "/brokers",
         permanent: true,
       },
-      {
-        source: "/ads/banner-promo.png",
-        destination: "/banners/promo-trade.png",
-        permanent: true,
-      },
-      {
-        source: "/ads/banner-partner.png",
-        destination: "/banners/partner-platform.png",
-        permanent: true,
-      },
     ]
   },
 }

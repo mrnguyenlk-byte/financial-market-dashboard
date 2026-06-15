@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import { SITE_DOMAIN, SITE_LOGO, SITE_NAME } from "@/lib/brand"
+import type { SymbolDetailRecord } from "@/lib/symbol-detail"
+import { marketPagePath } from "@/lib/symbol-detail"
 
 function resolveSiteUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "")
@@ -62,6 +64,23 @@ export function buildPageMetadata({ title, description, path }: PageSeoInput): M
       images: [image],
     },
   }
+}
+
+export function buildMarketMetadata(record: SymbolDetailRecord): Metadata {
+  const slug = record.marketPageSlug
+  if (!slug) {
+    return buildPageMetadata({
+      title: `${record.name.en} | ${SITE_NAME}`,
+      description: `Market data and analytics for ${record.name.en} (${record.symbol}).`,
+      path: "/",
+    })
+  }
+
+  const path = marketPagePath(slug)
+  const title = `${record.name.en} (${record.symbol}) | ${SITE_NAME}`
+  const description = `Live market overview, chart, and analytics for ${record.name.en}. Illustrative data — not investment advice.`
+
+  return buildPageMetadata({ title, description, path })
 }
 
 export const homeMetadata = buildPageMetadata({

@@ -215,11 +215,18 @@ export function CurrencyStrength() {
     })
   }
 
+  const dataUnavailable =
+    Boolean(strengthApi.error) ||
+    strengthApi.data?.unavailable === true
+
   return (
     <section aria-labelledby="currency-strength-title" className="h-[400px]">
       <SectionHeading title={t("sec.currencyStrength1D")} />
       <Card className="h-[calc(100%-1.75rem)] border-border bg-card py-0">
         <CardContent className="flex h-full flex-col px-3 py-3">
+          {dataUnavailable && (
+            <p className="mb-2 text-xs text-muted-foreground">{t("error.marketDataUnavailable")}</p>
+          )}
           <div className="mb-3 grid shrink-0 grid-cols-9 gap-2">
             {currencyStrength.map((c) => {
               const active = visible.has(c.code)

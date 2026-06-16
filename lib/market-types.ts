@@ -88,18 +88,7 @@ export type GlobalQuote = {
   source: "live" | "mock"
 }
 
-export type NormalizedMarketQuote = {
-  symbol: string
-  name: string
-  price: number
-  change: number
-  changePercent: number
-  open: number
-  high: number
-  low: number
-  volume: number
-  updatedAt: string
-}
+export type { MarketQuote as NormalizedMarketQuote } from "@/types/market"
 
 export type VietnamMarketIndex = {
   symbol: string

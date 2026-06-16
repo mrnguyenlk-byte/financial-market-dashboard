@@ -11,6 +11,7 @@ export type QuotesResponse = {
   source?: "live" | "mock"
   quotes?: NormalizedMarketQuote[]
   fallback?: boolean
+  unavailable?: boolean
   updatedAt?: string
 }
 
@@ -20,11 +21,16 @@ const swrOptions = {
   errorRetryCount: 2,
 } as const
 
-/** Live market quotes from GET /api/market/quotes (30s cache). */
+/** Live market quotes from GET /api/markets/overview (30s cache). */
 export function useQuotes() {
   return useSWR<QuotesResponse>(
-    features.liveClientFetch ? SWR_KEYS.marketQuotes : null,
+    features.liveClientFetch ? SWR_KEYS.marketsOverview : null,
     jsonFetcher<QuotesResponse>,
     swrOptions,
   )
+}
+
+/** @deprecated Use useQuotes — same data from /api/markets/overview */
+export function useMarketsOverview() {
+  return useQuotes()
 }

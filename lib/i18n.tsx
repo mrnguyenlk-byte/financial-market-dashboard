@@ -288,6 +288,10 @@ const dict: Dict = {
   // Misc
   "misc.live": { vi: "Trực tiếp", en: "Live" },
   "misc.delayed": { vi: "Dữ liệu trễ", en: "Delayed data" },
+  "error.marketDataUnavailable": {
+    vi: "Thông tin thị trường tạm thời chưa khả dụng.",
+    en: "Market data temporarily unavailable.",
+  },
   "misc.today": { vi: "Hôm nay", en: "Today" },
   "misc.indices": { vi: "Chỉ số", en: "Indices" },
   "misc.commodities": { vi: "Hàng hóa", en: "Commodities" },
@@ -332,6 +336,12 @@ const dict: Dict = {
     en: "Compare Popular Platforms",
   },
   "brokers.compare.tableTitle": { vi: "Bảng so sánh nền tảng", en: "Platform Comparison Table" },
+  "brokers.compare.metric": { vi: "Tiêu chí", en: "Metric" },
+  "brokers.compare.score": { vi: "Tổng điểm", en: "Overall Score" },
+  "brokers.detail.subtitle": {
+    vi: "Thông tin nền tảng, giấy phép và điều kiện giao dịch.",
+    en: "Platform overview, regulation, and trading conditions.",
+  },
   "brokers.table.broker": { vi: "Nền tảng", en: "Platform" },
   "brokers.table.visit": { vi: "Truy cập", en: "Visit" },
   "brokers.guides.title": { vi: "Hướng dẫn nền tảng", en: "Platform Guides" },
@@ -345,6 +355,7 @@ const dict: Dict = {
   "brokers.badge.fastWithdrawal": { vi: "Rút tiền nhanh", en: "Fast Withdrawal" },
   "label.trustScore": { vi: "Điểm tin cậy", en: "Trust Score" },
   "label.leverage": { vi: "Đòn bẩy", en: "Leverage" },
+  "label.withdrawal": { vi: "Thời gian rút tiền", en: "Withdrawal Time" },
   "label.execution": { vi: "Loại khớp lệnh", en: "Execution Type" },
   "misc.review": { vi: "Đánh giá", en: "Review" },
   "label.offer": { vi: "Ưu đãi", en: "Offer" },

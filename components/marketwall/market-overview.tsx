@@ -137,6 +137,9 @@ export function MarketOverview({
 
   const items = overviewByCategory[tab]
   const symbolClickEnabled = features.symbolModal
+  const dataUnavailable =
+    Boolean(marketQuotes.error) ||
+    marketQuotes.data?.unavailable === true
 
   return (
     <Card className="flex h-[600px] w-full max-w-[300px] flex-col gap-0 overflow-hidden border-border bg-card p-0">
@@ -166,6 +169,8 @@ export function MarketOverview({
 
       {loading ? (
         <OverviewListSkeleton count={items.length || 12} />
+      ) : dataUnavailable ? (
+        <p className="px-3 py-4 text-xs text-muted-foreground">{t("error.marketDataUnavailable")}</p>
       ) : (
         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto">
           {items.map((item) => (

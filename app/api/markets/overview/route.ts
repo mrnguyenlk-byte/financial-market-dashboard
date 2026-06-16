@@ -6,14 +6,16 @@ export const dynamic = "force-dynamic"
 
 const CACHE_TTL_MS = 30_000
 
-/** Legacy alias — proxies to the Twelve Data overview service. */
 export async function GET() {
   try {
     const cached = await cachedProvider(
-      CACHE_KEYS.marketQuotes,
+      CACHE_KEYS.marketsOverview,
       async () => {
         const data = await fetchMarketsOverview()
-        return { data, source: data.source === "live" ? ("live" as const) : ("mock" as const) }
+        return {
+          data,
+          source: data.source === "live" ? ("live" as const) : ("mock" as const),
+        }
       },
       { ttlMs: CACHE_TTL_MS },
     )

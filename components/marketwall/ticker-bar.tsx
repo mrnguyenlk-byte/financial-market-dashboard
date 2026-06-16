@@ -103,6 +103,10 @@ export function TickerBar({ items: fallbackItems }: { items: TickerBarItem[] }) 
     return <TickerBarSkeleton count={Math.min(fallbackItems.length, 10)} />
   }
 
+  const dataUnavailable =
+    Boolean(marketQuotes.error) ||
+    marketQuotes.data?.unavailable === true
+
   const symbols = items.map((item) => item.symbol)
   const itemBySymbol = Object.fromEntries(items.map((item) => [item.symbol, item]))
   const symbolClickEnabled = features.symbolModal
@@ -114,6 +118,11 @@ export function TickerBar({ items: fallbackItems }: { items: TickerBarItem[] }) 
         <span className="text-[11px] font-bold uppercase tracking-wide text-gain">{t("misc.live")}</span>
       </div>
       <div className="relative flex flex-1 overflow-hidden">
+        {dataUnavailable && (
+          <span className="absolute right-2 top-1/2 z-20 -translate-y-1/2 text-[10px] text-muted-foreground">
+            {t("error.marketDataUnavailable")}
+          </span>
+        )}
         <div className="ticker-track flex w-max items-center divide-x divide-border/60">
           {symbols.map((s) => {
             const item = itemBySymbol[s]

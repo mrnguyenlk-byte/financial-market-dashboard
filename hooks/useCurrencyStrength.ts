@@ -17,6 +17,7 @@ export type CurrencyStrengthResponse = {
   source?: "live" | "mock"
   items?: CurrencyStrengthItem[]
   fallback?: boolean
+  unavailable?: boolean
   updatedAt?: string
 }
 

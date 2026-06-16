@@ -43,6 +43,20 @@ export type CurrencyStrengthQuote = {
   label: string
 }
 
+/** Alias for currency strength API rows. */
+export type CurrencyStrength = CurrencyStrengthQuote
+
+/** Heatmap tile quote from GET /api/heatmaps/[market]. */
+export type HeatmapAsset = {
+  symbol: string
+  name: string
+  price: number
+  changePercent: number
+  volume: number
+  sector: string
+  marketCap: number
+}
+
 export type FinancialSnapshot = {
   revenue: number
   netIncome: number

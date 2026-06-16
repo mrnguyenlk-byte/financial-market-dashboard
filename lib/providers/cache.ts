@@ -20,7 +20,11 @@ export const CACHE_KEYS = {
   globalMarkets: "provider:global:quotes",
   vietnamMarkets: "provider:vietnam:markets",
   marketQuotes: "api:market:quotes",
+  marketsOverview: "api:markets:overview",
   currencyStrength: "api:currency:strength",
+  heatmapVietnam: "api:heatmaps:vietnam",
+  heatmapUs: "api:heatmaps:us",
+  heatmapCrypto: "api:heatmaps:crypto",
   news: "api:news",
   events: "api:events:calendar",
 } as const

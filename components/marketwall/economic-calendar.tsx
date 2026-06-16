@@ -57,6 +57,7 @@ export function EconomicCalendar({ fallbackEvents }: { fallbackEvents: EconomicE
   return (
     <section aria-labelledby="calendar-title" className="flex h-[320px] flex-col">
       <SectionHeading
+        id="calendar-title"
         title={t("sec.calendar")}
         badge={
           <Badge variant="secondary" className="gap-1 text-[10px]">

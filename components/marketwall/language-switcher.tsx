@@ -23,7 +23,12 @@ export function LanguageSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="ghost" size="sm" className="gap-1.5 px-2 text-foreground" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 px-2 text-foreground"
+            aria-label={`Language: ${current.label}`}
+          />
         }
       >
         <span className="text-base leading-none" aria-hidden>

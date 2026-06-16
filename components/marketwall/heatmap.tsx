@@ -148,7 +148,7 @@ export function HeatmapSection({ markets }: { markets: HeatmapMarket[] }) {
   if (!vnMarket) {
     return (
       <section aria-labelledby="heatmap-title" className="min-w-0">
-        <SectionHeading title={t("sec.vnHeatmap")} />
+        <SectionHeading id="heatmap-title" title={t("sec.vnHeatmap")} />
         <div className="h-[520px] rounded-lg border border-border bg-card/40 p-px">
           <HeatmapGridSkeleton />
         </div>
@@ -162,6 +162,7 @@ export function HeatmapSection({ markets }: { markets: HeatmapMarket[] }) {
   return (
     <section aria-labelledby="heatmap-title" className="min-w-0">
       <SectionHeading
+        id="heatmap-title"
         title={t("sec.vnHeatmap")}
         badge={
           <Badge variant="secondary" className="gap-1 text-[10px]">

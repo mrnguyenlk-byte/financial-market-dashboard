@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next"
 import { SITE_HOST } from "@/lib/brand"
-
-const baseUrl = "https://btrading.org"
+import { SITE_URL } from "@/lib/seo"
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -11,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
       disallow: "/api/",
     },
     host: SITE_HOST,
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   }
 }

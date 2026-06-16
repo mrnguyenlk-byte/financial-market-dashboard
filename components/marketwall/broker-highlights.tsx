@@ -37,7 +37,7 @@ export function BrokerHighlights() {
 
   return (
     <section aria-labelledby="platforms-title">
-      <SectionHeading title={t("sec.brokers")} />
+      <SectionHeading id="platforms-title" title={t("sec.brokers")} />
       <div className="grid grid-cols-6 gap-3">
         {featuredPlatforms.map((b) => (
           <Card

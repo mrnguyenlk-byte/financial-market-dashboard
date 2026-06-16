@@ -44,6 +44,7 @@ export function MarketNews({ fallbackItems }: { fallbackItems: MarketNewsItem[] 
   return (
     <section aria-labelledby="news-title" className="flex h-[320px] flex-col">
       <SectionHeading
+        id="news-title"
         title={t("sec.news")}
         action={
           <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs text-primary">

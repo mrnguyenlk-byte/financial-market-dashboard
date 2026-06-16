@@ -109,16 +109,21 @@ export function SectionHeading({
   title,
   badge,
   action,
+  id,
 }: {
   title: string
   badge?: React.ReactNode
   action?: React.ReactNode
+  id?: string
 }) {
   return (
     <div className="mb-1.5 flex items-center justify-between gap-2">
       <div className="flex items-center gap-2">
         <span className="h-4 w-1 rounded-full bg-primary" aria-hidden />
-        <h2 className="text-sm font-semibold tracking-tight text-foreground sm:text-base">
+        <h2
+          id={id}
+          className="text-sm font-semibold tracking-tight text-foreground sm:text-base"
+        >
           {title}
         </h2>
         {badge}
